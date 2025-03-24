@@ -49,7 +49,8 @@ export class ExpenseCreateComponent implements OnInit {
     this.confirmedExpenseData = confirmedData;
     this.isExtracted = false;
     this.processingState = 'waiting';
-    console.log('Gasto confirmado:', confirmedData);
+    this.selectedFile = null;
+    this.expenseData = null;
     
     // Mostrar notificación de éxito
     this.notificationService.showAlert(

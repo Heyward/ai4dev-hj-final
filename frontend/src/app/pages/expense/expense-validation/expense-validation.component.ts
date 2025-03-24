@@ -92,8 +92,7 @@ export class ExpenseValidationComponent implements OnInit {
       'Cancelar'
     ).then((confirmed) => {
       if (confirmed) {
-        this.notificationService.success('En construcción...');
-        // this.submitForm();
+        this.submitForm();
       }
     });
   }
@@ -103,7 +102,15 @@ export class ExpenseValidationComponent implements OnInit {
     this.successMessage = null;
     this.errorMessage = null;
 
-    const formData = this.validationForm.value;
+    const formData = {
+      amount: Number(this.validationForm.value.amount),
+      provider: this.validationForm.value.provider,
+      providerId: this.validationForm.value.provider_id,
+      concept: this.validationForm.value.concept,
+      date: this.validationForm.value.date,
+      costCenterId: this.validationForm.value.cost_center_id,
+      currency: this.validationForm.value.currency
+    };
     
     this.expenseService.confirmExpense(this.expenseData.id, formData)
       .subscribe({
@@ -116,6 +123,7 @@ export class ExpenseValidationComponent implements OnInit {
             NotificationType.SUCCESS
           );
           this.expenseConfirmed.emit(response);
+          this.validationForm.reset();
         },
         error: (error) => {
           this.isSubmitting = false;

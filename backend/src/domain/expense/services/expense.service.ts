@@ -1,8 +1,9 @@
-import { Injectable, Inject, Logger } from '@nestjs/common';
+import { Injectable, Inject, Logger, NotFoundException } from '@nestjs/common';
 import { Expense, ExpenseStatus } from '../entities/expense.entity';
 import { IExpenseRepository } from '../interfaces/expense-repository.interface';
 import { IReceiptProcessor } from '../interfaces/receipt-processor.interface';
 import { IFileStorageService } from '../../shared/interfaces/file-storage.interface';
+import { ExpenseConfirmationData } from '../interfaces/expense-confirmation.interface';
 
 @Injectable()
 export class ExpenseService {
@@ -106,8 +107,24 @@ export class ExpenseService {
       });
   }
 
-  async confirmExpense(id: number): Promise<Expense> {
-    return this.expenseRepository.confirmExpense(id);
+  async confirmExpense(id: number, confirmationData: ExpenseConfirmationData): Promise<Expense> {
+    const expense = await this.findById(id);
+    
+    if (!expense) {
+      throw new NotFoundException(`Expense with ID ${id} not found`);
+    }
+
+    // Update expense with confirmation data
+    expense.amount = confirmationData.amount;
+    expense.provider = confirmationData.provider;
+    expense.providerId = confirmationData.providerId;
+    expense.concept = confirmationData.concept;
+    expense.date = confirmationData.date;
+    expense.costCenterId = parseInt(confirmationData?.costCenterId || '0');
+    expense.currency = confirmationData.currency;
+    expense.status = ExpenseStatus.CONFIRMED;
+
+    return this.expenseRepository.update(id, expense);
   }
 
   async rejectExpense(id: number): Promise<Expense> {
