@@ -1,0 +1,139 @@
+<div class="card">
+  <div class="card-header">
+    <h4 class="card-title mb-0">Validación de Datos Extraídos</h4>
+  </div>
+  <div class="card-body">
+
+
+    <form [formGroup]="validationForm" (ngSubmit)="onSubmit()" *ngIf="expenseData">
+      <div class="mb-3">
+        <label for="date" class="form-label">Fecha <span class="text-danger">*</span></label>
+        <input 
+          type="date" 
+          id="date" 
+          formControlName="date" 
+          class="form-control" 
+          [ngClass]="{'is-invalid': f['date'].touched && f['date'].errors}"
+        >
+        <div *ngIf="f['date'].touched && f['date'].errors" class="invalid-feedback">
+          <div *ngIf="f['date'].errors['required']">La fecha es obligatoria</div> 
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="amount" class="form-label">Monto <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text">$</span> 
+          <input 
+            type="number" 
+            id="amount" 
+            formControlName="amount" 
+            class="form-control" 
+            [ngClass]="{'is-invalid': f['amount'].touched && f['amount'].errors}"
+            placeholder="0.00"
+            step="0.01"
+          >
+          <div *ngIf="f['amount'].touched && f['amount'].errors" class="invalid-feedback">
+            <div *ngIf="f['amount'].errors['required']">El monto es obligatorio</div>
+            <div *ngIf="f['amount'].errors['min']">El monto debe ser mayor que 0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="provider" class="form-label">Proveedor <span class="text-danger">*</span></label>
+        <input 
+          type="text" 
+          id="provider" 
+          formControlName="provider" 
+          class="form-control" 
+          [ngClass]="{'is-invalid': f['provider'].touched && f['provider'].errors}"
+          placeholder="Nombre del proveedor"
+        >
+        <div *ngIf="f['provider'].touched && f['provider'].errors" class="invalid-feedback">
+          <div *ngIf="f['provider'].errors['required']">El proveedor es obligatorio</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="provider_id" class="form-label">ID del Proveedor (NIT) <span class="text-danger">*</span></label>
+        <input 
+          type="text" 
+          id="provider_id" 
+          formControlName="provider_id" 
+          class="form-control" 
+          [ngClass]="{'is-invalid': f['provider_id'].touched && f['provider_id'].errors}"
+          placeholder="NIT o identificación del proveedor"
+        >
+        <div *ngIf="f['provider_id'].touched && f['provider_id'].errors" class="invalid-feedback">
+          <div *ngIf="f['provider_id'].errors['required']">El ID del proveedor es obligatorio</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="concept" class="form-label">Concepto <span class="text-danger">*</span></label>
+        <textarea 
+          id="concept" 
+          formControlName="concept" 
+          class="form-control" 
+          [ngClass]="{'is-invalid': f['concept'].touched && f['concept'].errors}"
+          placeholder="Descripción del gasto"
+          rows="3"
+        ></textarea>
+        <div *ngIf="f['concept'].touched && f['concept'].errors" class="invalid-feedback">
+          <div *ngIf="f['concept'].errors['required']">El concepto es obligatorio</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="cost_center_id" class="form-label">Centro de Costos</label>
+          <select 
+            id="cost_center_id" 
+            formControlName="cost_center_id" 
+            class="form-select"
+          >
+            <option value="">Seleccionar centro de costos</option>
+            <option value="1">Administración</option>
+            <option value="2">Ventas</option>
+            <option value="3">Operaciones</option>
+            <option value="4">Marketing</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="currency" class="form-label">Moneda</label>
+          <select 
+            id="currency" 
+            formControlName="currency" 
+            class="form-select"
+          >
+            <option value="COP">Peso Colombiano (COP)</option>
+            <option value="USD">Dólar Estadounidense (USD)</option>
+            <option value="EUR">Euro (EUR)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Mensajes de éxito o error -->
+      <div *ngIf="successMessage" class="alert alert-success mt-3">
+        <i class="ri-check-line me-2"></i> {{ successMessage }}
+      </div>
+      
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+        <i class="ri-error-warning-line me-2"></i> {{ errorMessage }}
+      </div>
+
+      <div class="d-flex justify-content-end mt-4">
+        <button 
+          type="submit" 
+          class="btn btn-primary" 
+          [disabled]="isSubmitting"
+        >
+          <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+          Confirmar Gasto
+        </button>
+      </div>
+    </form>
+  </div>
+</div> 

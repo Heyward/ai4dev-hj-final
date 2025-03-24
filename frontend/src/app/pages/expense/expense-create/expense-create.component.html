@@ -1,0 +1,77 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+        <h4 class="mb-sm-0">Registrar Nuevo Gasto</h4>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje de éxito cuando el gasto ha sido confirmado -->
+  <div class="row" *ngIf="isExpenseConfirmed">
+    <div class="col-12">
+      <div class="alert alert-success">
+        <div class="d-flex">
+          <div class="flex-shrink-0">
+            <i class="ri-checkbox-circle-line fs-16 align-middle"></i>
+          </div>
+          <div class="flex-grow-1 ms-2">
+            <h5 class="alert-heading">¡Gasto registrado correctamente!</h5>
+            <p class="mb-0">El gasto ha sido confirmado y registrado en el sistema.</p>
+            <div class="mt-2">
+              <button type="button" class="btn btn-sm btn-primary" (click)="resetForm()">Registrar otro gasto</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!isExpenseConfirmed">
+    <div class="col-lg-6">
+      <!-- Componente de carga de archivos -->
+      <app-file-upload 
+        (fileSelected)="handleFileSelected($event)"
+        (expenseCreated)="handleExpenseCreated($event)">
+      </app-file-upload>
+    </div>
+    
+    <div class="col-lg-6">
+      <!-- Componente de validación de datos OCR -->
+      <app-expense-validation 
+        [expenseData]="expenseData && isExtracted ? expenseData : null"
+        (expenseConfirmed)="handleExpenseConfirmed($event)"
+        *ngIf="isExtracted">
+      </app-expense-validation>
+      
+      <!-- Mensaje de procesamiento OCR -->
+      <div class="card" *ngIf="!isExtracted">
+        <div class="card-header">
+          <h4 class="card-title mb-0">{{ isWaiting() ? 'Estado' : 'Procesando' }}</h4>
+        </div>
+        <div class="card-body">
+          <div class="alert" [ngClass]="{'alert-info': isWaiting(), 'alert-warning': !isWaiting()}">
+            <div class="d-flex align-items-center">
+              <div class="spinner-border spinner-border-sm me-2" 
+                   [ngClass]="{'text-info': isWaiting(), 'text-warning': !isWaiting()}"
+                   role="status"
+                   *ngIf="!isWaiting()">
+                <span class="visually-hidden">Procesando...</span>
+              </div>
+              <div>
+                <strong>Estado del Proceso</strong>
+                <p class="mb-0">
+                  <ng-container [ngSwitch]="processingState">
+                    <ng-container *ngSwitchCase="'waiting'">Esperando carga de archivo...</ng-container>
+                    <ng-container *ngSwitchCase="'uploading'">Subiendo archivo...</ng-container>
+                    <ng-container *ngSwitchCase="'extracting'">Extrayendo información del comprobante...</ng-container>
+                  </ng-container>
+                </p>
+              </div>
+            </div> 
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
