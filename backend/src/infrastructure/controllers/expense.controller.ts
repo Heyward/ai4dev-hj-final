@@ -3,6 +3,7 @@ import { ExpenseService } from '../../domain/expense/services/expense.service';
 import { v4 as uuidv4 } from 'uuid';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { ExpenseConfirmationData } from '../../domain/expense/interfaces/expense-confirmation.interface';
 
 @Controller('api/expenses')
 export class ExpenseController {
@@ -75,9 +76,12 @@ export class ExpenseController {
   }
 
   @Post(':id/confirm')
-  async confirmExpense(@Param('id') id: number) {
+  async confirmExpense(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() confirmationData: ExpenseConfirmationData
+  ) {
     try {
-      const expense = await this.expenseService.confirmExpense(id);
+      const expense = await this.expenseService.confirmExpense(id, confirmationData);
       
       return {
         status: 'success',

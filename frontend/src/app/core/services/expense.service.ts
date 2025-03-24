@@ -3,12 +3,13 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { GlobalComponent } from 'src/app/global.component';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExpenseService {
-  private apiUrl = GlobalComponent.API_URL + 'expenses';
+  private apiUrl = `${environment.apiUrl}/api/expenses`;
 
   constructor(private http: HttpClient) { }
 
@@ -46,14 +47,11 @@ export class ExpenseService {
   /**
    * Confirma y actualiza los datos de un gasto extraídos por OCR
    * @param expenseId ID del gasto
-   * @param expenseData Datos actualizados del gasto
+   * @param confirmationData Datos actualizados del gasto
    * @returns Observable con la respuesta del servidor
    */
-  confirmExpense(expenseId: string, expenseData: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${expenseId}/confirm`, expenseData)
-      .pipe(
-        catchError(this.handleError)
-      );
+  confirmExpense(expenseId: number, confirmationData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${expenseId}/confirm`, confirmationData);
   }
 
   /**
